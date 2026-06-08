@@ -6,11 +6,13 @@ import kr.pindong.backend.dto.request.CommentCreateRequest;
 import kr.pindong.backend.dto.response.CommentResponse;
 import kr.pindong.backend.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -30,8 +32,8 @@ public class CommentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CommentResponse>> getAll(@PathVariable UUID pinId) {
-        return ResponseEntity.ok(commentService.getAll(pinId));
+    public ResponseEntity<Page<CommentResponse>> getAll(@PageableDefault(size = 20) Pageable pageable, @PathVariable UUID pinId) {
+        return ResponseEntity.ok(commentService.getAll(pageable, pinId));
     }
 
     @DeleteMapping("/{id}")

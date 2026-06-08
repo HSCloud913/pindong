@@ -14,6 +14,8 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,13 +44,13 @@ public class PinService {
     }
 
     @Transactional(readOnly = true)
-    public List<PinResponse> getMe(User user) {
-        return pinRepository.findByUserAndStatusNotOrderByCreatedAtDesc(user, PinStatus.deleted).stream().map(PinResponse::from).toList();
+    public Page<PinResponse> getMe(Pageable pageable, User user) {
+        return pinRepository.findByUserAndStatusNotOrderByCreatedAtDesc(pageable, user, PinStatus.deleted).map(PinResponse::from);
     }
 
     @Transactional(readOnly = true)
-    public List<PinResponse> getNearBy(double latitude, double longitude, double radius) {
-        return pinRepository.findNearby(latitude, longitude, radius).stream().map(PinResponse::from).toList();
+    public List<PinResponse> getNearBy(int limit, double latitude, double longitude, double radius) {
+        return pinRepository.findNearby(limit, latitude, longitude, radius).stream().map(PinResponse::from).toList();
     }
 
     @Transactional

@@ -1,6 +1,8 @@
 package kr.pindong.backend.service;
 
 import kr.pindong.backend.exception.ForbiddenException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import kr.pindong.backend.domain.comment.Comment;
 import kr.pindong.backend.domain.comment.CommentRepository;
@@ -13,7 +15,6 @@ import kr.pindong.backend.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -40,10 +41,10 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<CommentResponse> getAll(UUID pinId) {
+    public Page<CommentResponse> getAll(Pageable pageable, UUID pinId) {
         pinRepository.findById(pinId).orElseThrow(() -> new NotFoundException("Pin not found"));
 
-        return commentRepository.findByPinIdAndDeletedAtIsNullOrderByCreatedAtAsc(pinId).stream().map(CommentResponse::from).toList();
+        return commentRepository.findByPinIdAndDeletedAtIsNullOrderByCreatedAtAsc(pageable, pinId).map(CommentResponse::from);
     }
 
     @Transactional

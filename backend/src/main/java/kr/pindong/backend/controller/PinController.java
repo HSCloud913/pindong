@@ -7,6 +7,9 @@ import kr.pindong.backend.dto.request.PinUpdateRequest;
 import kr.pindong.backend.dto.response.PinResponse;
 import kr.pindong.backend.service.PinService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -25,20 +28,19 @@ public class PinController {
         return ResponseEntity.status(201).body(pinService.create(user, request));
     }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<PinResponse> getOne(@PathVariable UUID id) {
         return ResponseEntity.ok(pinService.getOne(id));
     }
 
     @GetMapping("/me")
-    public ResponseEntity<List<PinResponse>> getMe(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(pinService.getMe(user));
+    public ResponseEntity<Page<PinResponse>> getMe(@PageableDefault(size = 20) Pageable pageable, @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(pinService.getMe(pageable, user));
     }
 
     @GetMapping("/nearby")
-    public ResponseEntity<List<PinResponse>> getNearBy(@RequestParam double latitude, @RequestParam double longitude, @RequestParam(defaultValue = "1000") double radius) {
-        return ResponseEntity.ok(pinService.getNearBy(latitude, longitude, radius));
+    public ResponseEntity<List<PinResponse>> getNearBy(@RequestParam(defaultValue = "50") int limit, @RequestParam double latitude, @RequestParam double longitude, @RequestParam(defaultValue = "1000") double radius) {
+        return ResponseEntity.ok(pinService.getNearBy(limit, latitude, longitude, radius));
     }
 
     @PutMapping("/{id}")
