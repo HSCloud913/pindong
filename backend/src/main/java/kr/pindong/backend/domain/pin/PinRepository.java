@@ -1,5 +1,6 @@
 package kr.pindong.backend.domain.pin;
 
+import kr.pindong.backend.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -8,6 +9,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface PinRepository extends JpaRepository<Pin, UUID> {
+
+    List<Pin> findByUserAndStatusNotOrderByCreatedAtDesc(User user, PinStatus status);
 
     @Query(value = """
               SELECT * FROM pins

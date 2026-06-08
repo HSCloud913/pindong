@@ -43,7 +43,7 @@ public class Pin {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private PinStatus status = PinStatus.active;
+    private PinStatus status;
 
     @Column(name = "view_count", nullable = false)
     private int viewCount = 0;
@@ -71,6 +71,14 @@ public class Pin {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
         this.expiresAt = LocalDateTime.now().plusDays(7);
+    }
+
+    public void update(String category, String title, String content) {
+        this.category = category;
+        this.title = title;
+        this.content = content;
+
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void delete() {
